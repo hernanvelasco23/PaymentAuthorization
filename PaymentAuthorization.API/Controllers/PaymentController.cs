@@ -10,11 +10,11 @@ namespace PaymentAuthorization.Controllers
     public class PaymenController : ControllerBase
     {
 
-        private readonly PaymentProcessorService _paymentProcessorService;
+        private readonly IPaymentProcessorService _paymentProcessorService;
 
-        public PaymenController(PaymentProcessorService paymentProcessorService)
+        public PaymenController(IPaymentProcessorService paymentProcessorService)
         {
-            _paymentProcessorService = paymentProcessorService ?? throw new ArgumentNullException(nameof(paymentProcessorService));
+            _paymentProcessorService = paymentProcessorService;
         }
 
         [HttpPost]

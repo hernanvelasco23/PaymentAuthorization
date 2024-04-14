@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using PaymentAuthorization.Data;
-using PaymentAuthorization.Data.Repoditories;
 using PaymentAuthorization.Data.Repositories;
 using PaymentAuthorization.Services;
 
@@ -15,9 +13,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Agregar el servicio PaymentProcessorService al contenedor de servicios
-builder.Services.AddScoped<PaymentProcessorService>();
-builder.Services.AddScoped<IPaymentRequestRepository, PaymentRequestRepository>();
-builder.Services.AddScoped<IApprovedAuthorizationRepository, ApprovedAuthorizationRepository>();
+builder.Services.AddScoped<IPaymentProcessorService, PaymentProcessorService>();
+
+// Registrra repo genérico
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+//builder.Services.AddScoped<IPaymentRequestRepository, PaymentRequestRepository>();
+//builder.Services.AddScoped<IApprovedAuthorizationRepository, ApprovedAuthorizationRepository>();
 
 builder.Services.AddDbContext<PaymentAuthorizationDbContext>(options =>
        options.UseSqlServer(builder.Configuration.GetConnectionString("PaymentAuthorizationConnection")), ServiceLifetime.Scoped);

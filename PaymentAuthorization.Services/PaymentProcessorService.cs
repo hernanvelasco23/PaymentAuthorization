@@ -1,15 +1,15 @@
 ﻿using PaymentAuthorization.Data.Entities;
-using PaymentAuthorization.Data.Repoditories;
 using PaymentAuthorization.Data.Repositories;
 
 namespace PaymentAuthorization.Services
 {
-    public class PaymentProcessorService
+    public class PaymentProcessorService: IPaymentProcessorService
     {
-        private readonly IPaymentRequestRepository _paymentRequestRepository;
-        private readonly IApprovedAuthorizationRepository _approvedAuthRepository;
 
-        public PaymentProcessorService(IPaymentRequestRepository paymentRequestRepository, IApprovedAuthorizationRepository approvedAuthRepository)
+        private readonly IRepository<PaymentRequest> _paymentRequestRepository;
+        private readonly IRepository<ApprovedAuthorization> _approvedAuthRepository;
+
+        public PaymentProcessorService(IRepository<PaymentRequest> paymentRequestRepository, IRepository<ApprovedAuthorization> approvedAuthRepository)
         {
             _paymentRequestRepository = paymentRequestRepository;
             _approvedAuthRepository = approvedAuthRepository;
@@ -22,7 +22,7 @@ namespace PaymentAuthorization.Services
             request.Status = isAuthorized ? RequestStatus.Approved : RequestStatus.Rejected;
             request.IsConfirmed = isAuthorized;
 
-            await _paymentRequestRepository.AddOrUpdateAsync(request);
+            await _paymentRequestRepository.AddAsync(request);
 
             if (isAuthorized)
             {
@@ -38,7 +38,7 @@ namespace PaymentAuthorization.Services
         }
         private async Task ProcessPremiumAuthorizationAsync(PaymentRequest request)
         {
-            var reversalScheduleTime = DateTime.UtcNow.AddMinutes(5);
+            var reversalScheduleTime = DateTime.UtcNow.AddMinutes(1);
 
             await Task.Run(async () =>
             {

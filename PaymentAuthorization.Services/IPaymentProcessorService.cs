@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using PaymentAuthorization.Data.Entities;
 
-namespace PaymentAuthorization.Data.Repositories
+namespace PaymentAuthorization.Services
 {
-    public interface IApprovedAuthorizationRepository
+    public interface IPaymentProcessorService
     {
-        Task AddAsync(ApprovedAuthorization authorization);
+        public Task<bool> ProcessAuthorizationAsync(PaymentRequest request);
     }
 }
